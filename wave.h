@@ -28,11 +28,6 @@ typedef struct ADCFILEHEADER* LPADCFILEHEADER;
 class Wave
 {
 private:
-	Wave(unsigned int size = 512, float frqsmpl = 48000.0)
-	{
-		FFT_length = size;
-		frq_sample = frqsmpl;
-	}
 	// опхлевюмхе: он яоежхтхйе бюпхюмрю, вюярнрш f1 Х f3 янбоюдючр, онщрнлс ашкн бгърн f3 = 400 Hz.
 
 	float frq_sample;
@@ -55,7 +50,12 @@ private:
 	}
 
 public:
-	void setDataSize(unsigned int set)
+	Wave(unsigned int size = 512, float frqsmpl = 48000.0)
+	{
+		FFT_length = size;
+		frq_sample = frqsmpl;
+	}
+	void setDataSize(unsigned int set = )
 	{
 		setFFT_length(set);
 		signal_data.resize(getFFT_length());
