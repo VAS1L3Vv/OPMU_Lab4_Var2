@@ -8,8 +8,8 @@
 #include <vector>
 #include <fftw3.h>
 #include <cmath>
-using std::vector;
-using std::complex;
+#include <fstream>
+using namespace std;
 struct ADCFILEHEADER
 {
 	double dt;
@@ -24,7 +24,6 @@ typedef struct ADCFILEHEADER* LPADCFILEHEADER;
 #define ADCF_DATA_FLOAT 0x00000001
 #define ADCF_TYPE_REAL 0x00000000 
 #define ADCF_TYPE_COMPLEX 0x00000002
-// head.flags = ADCF_TYPE_COMPLEX | ADCF_DATA_FLOAT;
 class Wave
 {
 private:
@@ -39,7 +38,7 @@ private:
 	unsigned int FFT_length;
 	vector <complex<float>> signal_data;			// вектор отсчета сигналов
 	vector <float> f = { 0.0,200.0,1024.0,400.0 }; //Создан массив из 4 элементов для удобного индексирования гармоник где f1 = f[1]..... fn = f[n]
-	vector <float> A = { 0, 0.02, 0.2, 0.2 };		  // Создан массив из 4 элементов для удобного индексирования амплитуд гармоник, где А1 = А[1]..... An = A[n]											  
+	vector <float> A = { 0, 0.02, 0.2, 0.2 };	 // Создан массив из 4 элементов для удобного индексирования амплитуд гармоник, где А1 = А[1]..... An = A[n]											  
 
 	complex <float> SignalHarmony(int n) // Метод, возвращающий расчет сигнала соответсвующей гармоники
 	{
@@ -67,15 +66,7 @@ private:
 	{
 		FFT_length = set;
 	}
-	
-	// создаем одномерную выборку, все значения которой равны 1
-	vector<complex<float> > data(64, 1.);
-	// создаем план для библиотеки fftw
-	fftwf_plan plan = fftwf_plan_dft_1d(data.size(), (fftwf_complex*)& data[0],
-		(fftwf_complex*)& data[0], FFTW_FORWARD, FFTW_ESTIMATE);
-	// преобразование Фурье
-	fftwf_execute(plan);
-	fftwf_destroy_plan(plan);
+	
 public:
 	Wave(unsigned int size = 512, float frqsmpl = 48000.0)
 	{
@@ -90,6 +81,36 @@ public:
 	vector <complex<float>> getSignalData()
 	{
 		return signal_data;
+	}
+
+	void CalculateFFT(vector <complex<float>> &data)
+	{
+		GenerateSignal();
+		data = getSignalData();
+	fftwf_plan plan = fftwf_plan_dft_1d(data.size(), (fftwf_complex*)& data[0],
+		(fftwf_complex*)& data[0], FFTW_FORWARD, FFTW_ESTIMATE);
+	fftwf_execute(plan);
+	fftwf_destroy_plan(plan);
+	}
+
+	bool write_adc(vector<complex<float>> data, double freq_sampling)
+	{
+		ADCFILEHEADER head;
+		head.Am = 1.0;
+		head.h = 32;
+		head.dt = 1.0 / freq_sampling;
+		head.fN = data.size();
+		head.flags = ADCF_TYPE_COMPLEX | ADCF_DATA_FLOAT;
+		const char* FName = "H:\\Desktop\\101.adc";
+		float im = 0.0;
+		ofstream out(FName, ios::binary);
+		out.write((char*)& head, sizeof(head));
+		for (int i = 0; i < data.size(); ++i)
+		{
+			out.write((char*)& data[i], sizeof(data[i]));
+		}
+		out.close();
+		return true;
 	}
 };
 #endif // !_WAVE_H

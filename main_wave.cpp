@@ -1,7 +1,6 @@
 #include "wave.h"
 #include <iostream>
-using std::cout;
-using std::cin;
+using namespace std;
 int main()
 {
 	vector <complex<float>> data;
@@ -13,10 +12,8 @@ int main()
 	cin >> b;
 	Wave SIGNAL(a,b);
 	SIGNAL.setDataSize(a);
-	SIGNAL.GenerateSignal();
 	data = getSignalData();
 	SIGNAL.CalculateFFT(data);
-	dataFFT = getSpectrFFT();
-	write_adc(dataFFT, b);
+	write_adc(data, b);
 
 }
