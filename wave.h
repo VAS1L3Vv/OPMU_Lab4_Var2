@@ -27,12 +27,12 @@ typedef struct ADCFILEHEADER* LPADCFILEHEADER;
 // head.flags = ADCF_TYPE_COMPLEX | ADCF_DATA_FLOAT;
 class Wave
 {
-private:
 	Wave(unsigned int size = 512, float frqsmpl = 48000.0)
 	{
 		FFT_length = size;
 		frq_sample = frqsmpl;
 	}
+private:
 	// опхлевюмхе: он яоежхтхйе бюпхюмрю, вюярнрш f1 Х f3 янбоюдючр, онщрнлс ашкн бгърн f3 = 400 Hz.
 
 	float frq_sample;
