@@ -27,12 +27,12 @@ typedef struct ADCFILEHEADER* LPADCFILEHEADER;
 // head.flags = ADCF_TYPE_COMPLEX | ADCF_DATA_FLOAT;
 class Wave
 {
+private:
 	Wave(unsigned int size = 512, float frqsmpl = 48000.0)
 	{
 		FFT_length = size;
 		frq_sample = frqsmpl;
 	}
-private:
 	// ПРИМЕЧАНИЕ: ПО СПЕЦИФИКЕ ВАРИАНТА, ЧАСТОТЫ f1 и f3 СОВПАДАЮТ, ПОЭТОМУ БЫЛО ВЗЯТО f3 = 400 Hz.
 
 	float frq_sample;
@@ -45,17 +45,44 @@ private:
 	{
 		return sin(2 * M_PI * n * f[n] / frq_sample);
 	}
-	void setFFT_length(unsigned int set) // приватный сеттер для косвенного применения в другом публичном методе
+	void GenerateSignal()
 	{
-		FFT_length = set;
+		int x = getFFT_length();
+		for (int i = 0; i < x; i++)
+		{
+			signal_data[i] = SignalHarmony(1) + SignalHarmony(2) + SignalHarmony(3);
+		}
 	}
+
+	vector <complex<float>> getSignalData()
+	{
+		return signal_data;
+	}
+
 	int getFFT_length() // приватный геттер для косвенного применения в другом публичном методе
 	{
 		return FFT_length;
 	}
-
+	void setFFT_length(unsigned int set) // приватный сеттер для косвенного применения в другом публичном методе
+	{
+		FFT_length = set;
+	}
+	
+	// создаем одномерную выборку, все значения которой равны 1
+	vector<complex<float> > data(64, 1.);
+	// создаем план для библиотеки fftw
+	fftwf_plan plan = fftwf_plan_dft_1d(data.size(), (fftwf_complex*)& data[0],
+		(fftwf_complex*)& data[0], FFTW_FORWARD, FFTW_ESTIMATE);
+	// преобразование Фурье
+	fftwf_execute(plan);
+	fftwf_destroy_plan(plan);
 public:
-	void setDataSize(unsigned int set)
+	Wave(unsigned int size = 512, float frqsmpl = 48000.0)
+	{
+		FFT_length = size;
+		frq_sample = frqsmpl;
+	}
+	void setDataSize(unsigned int set = 512)
 	{
 		setFFT_length(set);
 		signal_data.resize(getFFT_length());
