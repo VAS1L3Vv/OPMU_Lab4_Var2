@@ -3,17 +3,19 @@
 using namespace std;
 int main()
 {
+	setlocale(LC_ALL, "rus");
 	vector <complex<float>> data;
 	vector <complex<float>> dataFFT;
 	unsigned int a;
-	float b;
+	double b;
 	cout << "¬ведите с новой строки: „астоту дискретизации, количество отсчетов (или оставьте по умолчанию = 48к√ц; =512;) \n";
 	cin >> a; 
+	cout << endl;
 	cin >> b;
 	Wave SIGNAL(a,b);
 	SIGNAL.setDataSize(a);
-	data = getSignalData();
+	data = SIGNAL.getSignalData();
 	SIGNAL.CalculateFFT(data);
-	write_adc(data, b);
+	SIGNAL.write_adc(data, b);
 
 }
