@@ -79,7 +79,6 @@ public:
 	void CalculateFFT(vector <complex<float>> &data)
 	{
 		GenerateSignal();
-		data = getSignalData();
 	fftwf_plan plan = fftwf_plan_dft_1d(data.size(), (fftwf_complex*)& data[0],
 		(fftwf_complex*)& data[0], FFTW_FORWARD, FFTW_ESTIMATE);
 	fftwf_execute(plan);

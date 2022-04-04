@@ -5,6 +5,6 @@ H:\VS\Projects\OPMU_4\wave.h(36): warning C4305: инициализация: у�
               _Ty=float
           ]
 H:\VS\Projects\OPMU_4\wave.h(40): warning C4244: аргумент: преобразование "double" в "const std::complex<float>::_Ty", возможна потеря данных
-H:\VS\Projects\OPMU_4\wave.h(101): warning C4018: <: несоответствие типов со знаком и без знака
+H:\VS\Projects\OPMU_4\wave.h(100): warning C4018: <: несоответствие типов со знаком и без знака
 H:\VS\Projects\OPMU_4\main_wave.cpp(15): warning C4244: аргумент: преобразование "double" в "float", возможна потеря данных
   OPMU_4.vcxproj -> H:\VS\Projects\OPMU_4\Debug\OPMU_4.exe

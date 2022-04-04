@@ -9,9 +9,9 @@ int main()
 	unsigned int a;
 	double b;
 	cout << "¬ведите с новой строки: „астоту дискретизации, количество отсчетов (или оставьте по умолчанию = 48к√ц; =512;) \n";
-	cin >> a; 
+	cin >> b; 
 	cout << endl;
-	cin >> b;
+	cin >> a;
 	Wave SIGNAL(a,b);
 	SIGNAL.setDataSize(a);
 	data = SIGNAL.getSignalData();
