@@ -5,7 +5,6 @@ int main()
 {
 	setlocale(LC_ALL, "rus");
 	vector <complex<float>> data;
-	vector <complex<float>> dataFFT;
 	unsigned int a;
 	double b;
 	cout << "¬ведите с новой строки: „астоту дискретизации, количество отсчетов (или оставьте по умолчанию = 48к√ц; =512;) \n";

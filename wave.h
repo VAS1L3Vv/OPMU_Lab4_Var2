@@ -29,22 +29,23 @@ class Wave
 private:
 	// ПРИМЕЧАНИЕ: ПО СПЕЦИФИКЕ ВАРИАНТА, ЧАСТОТЫ f1 и f3 СОВПАДАЮТ, ПОЭТОМУ БЫЛО ВЗЯТО f3 = 400 Hz.
 
-	float frq_sample;
+	double frq_sample;
 	unsigned int FFT_length;
 	vector <complex<float>> signal_data;			// вектор отсчета сигналов
-	vector <float> f = { 0.0,200.0,1024.0,400.0 }; //Создан массив из 4 элементов для удобного индексирования гармоник где f1 = f[1]..... fn = f[n]
-	vector <float> A = { 0, 0.02, 0.2, 0.2 };	 // Создан массив из 4 элементов для удобного индексирования амплитуд гармоник, где А1 = А[1]..... An = A[n]											  
+	float f[4] = { 0,200.0,1024.0,400.0 }; //Создан массив из 4 элементов для удобного индексирования гармоник где f1 = f[1]..... fn = f[n]
+	float A[4] = { 0, 0.02, 0.2, 0.2 };	 // Создан массив из 4 элементов для удобного индексирования амплитуд гармоник, где А1 = А[1]..... An = A[n]											  
 
-	complex <float> SignalHarmony(int n) // Метод, возвращающий расчет сигнала соответсвующей гармоники
+	complex <float> SignalHarmony(int n,int i) // Метод, возвращающий расчет сигнала соответсвующей гармоники
 	{
-		return sin(2 * M_PI * n * f[n] / frq_sample);
+		float St = A[n] * sin(2.0 * M_PI * i * f[n] / frq_sample);
+		return St;
 	}
 	void GenerateSignal()
 	{
 		int x = getFFT_length();
 		for (int i = 0; i < x; i++)
 		{
-			signal_data[i] = SignalHarmony(1) + SignalHarmony(2) + SignalHarmony(3);
+			signal_data[i] = SignalHarmony(1,i) + SignalHarmony(2,i) + SignalHarmony(3,i);
 		}
 	}
 
@@ -59,7 +60,7 @@ private:
 	
 
 public:
-	Wave(unsigned int size = 512, float frqsmpl = 48000.0)
+	Wave(unsigned int size = 512, double frqsmpl = 48000.0)
 	{
 		FFT_length = size;
 		cout << endl << size << endl;
@@ -79,8 +80,7 @@ public:
 	void CalculateFFT(vector <complex<float>> &data)
 	{
 		GenerateSignal();
-	fftwf_plan plan = fftwf_plan_dft_1d(data.size(), (fftwf_complex*)& data[0],
-		(fftwf_complex*)& data[0], FFTW_FORWARD, FFTW_ESTIMATE);
+	fftwf_plan plan = fftwf_plan_dft_1d(getFFT_length(), (fftwf_complex*)& data[0], (fftwf_complex*)& data[0], FFTW_FORWARD, FFTW_ESTIMATE);
 	fftwf_execute(plan);
 	fftwf_destroy_plan(plan);
 	}
@@ -91,13 +91,13 @@ public:
 		head.Am = 1.0;
 		head.h = 32;
 		head.dt = 1.0 / freq_sampling;
-		head.fN = data.size();
+		head.fN = getFFT_length();
 		head.flags = ADCF_TYPE_COMPLEX | ADCF_DATA_FLOAT;
 		const char* FName = "H:\\Desktop\\101.adc";
 		float im = 0.0;
 		ofstream out(FName, ios::binary);
 		out.write((char*)& head, sizeof(head));
-		for (int i = 0; i < data.size(); ++i)
+		for (int i = 0; i < getFFT_length(); ++i)
 		{
 			out.write((char*)& data[i], sizeof(data[i]));
 		}
