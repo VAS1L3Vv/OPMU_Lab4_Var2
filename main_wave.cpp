@@ -13,8 +13,7 @@ int main()
 	cin >> a;
 	Wave SIGNAL(a,b);
 	SIGNAL.setDataSize(a);
+	SIGNAL.CalculateFFT();
 	data = SIGNAL.getSignalData();
-	SIGNAL.CalculateFFT(data);
 	SIGNAL.write_adc(data, b);
-
 }

@@ -77,10 +77,10 @@ public:
 		return signal_data;
 	}
 
-	void CalculateFFT(vector <complex<float>> &data)
+	void CalculateFFT()
 	{
 		GenerateSignal();
-	fftwf_plan plan = fftwf_plan_dft_1d(getFFT_length(), (fftwf_complex*)& data[0], (fftwf_complex*)& data[0], FFTW_FORWARD, FFTW_ESTIMATE);
+	fftwf_plan plan = fftwf_plan_dft_1d(getFFT_length(), (fftwf_complex*)& signal_data[0], (fftwf_complex*)& signal_data[0], FFTW_FORWARD, FFTW_ESTIMATE);
 	fftwf_execute(plan);
 	fftwf_destroy_plan(plan);
 	}
